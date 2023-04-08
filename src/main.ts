@@ -10,7 +10,8 @@ async function main() {
 
         await Promise.all(uniquePaths.map((path) => {
             const name = encodeURIComponent(path);
-            return client.uploadArtifact(name, [path], __dirname, { continueOnError: false })
+            console.log("cwd:", process.cwd());
+            return client.uploadArtifact(name, [path], ".", { continueOnError: false })
         }))
     } catch (err) {
         if (err instanceof Error) setFailed(err);
