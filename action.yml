@@ -1,0 +1,9 @@
+name: "Upload Artifact"
+description: "Upload one more file system paths as artifacts."
+inputs:
+  path:
+    description: "One or more file or directory paths to upload."
+    required: true
+runs:
+  using: "node16"
+  main: "lib/main.js"
