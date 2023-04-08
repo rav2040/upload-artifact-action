@@ -11,7 +11,7 @@ async function main() {
 
         await Promise.all(uniquePaths.map((path) => {
             const name = createHash("sha256").update(path).digest("hex");
-            return client.uploadArtifact(name, [path], process.cwd(), { continueOnError: false })
+            return client.uploadArtifact(name, [path], ".", { continueOnError: false })
         }))
     } catch (err) {
         if (err instanceof Error) setFailed(err);
