@@ -1,7 +1,7 @@
 import { createHash } from "crypto";
-import { walk } from '@nodelib/fs.walk';
 import { getInput, setFailed } from "@actions/core";
 import { create } from "@actions/artifact";
+import globby from "globby";
 
 async function main() {
     try {
@@ -12,24 +12,12 @@ async function main() {
 
         await Promise.all(uniquePaths.map(async (path) => {
             const name = createHash("sha256").update(path).digest("hex");
-            const paths = await getFileList(path);
+            const paths = await globby(path);
             return client.uploadArtifact(name, paths, ".", { continueOnError: false })
         }))
     } catch (err) {
         if (err instanceof Error) setFailed(err);
     }
-}
-
-function getFileList(path: string) {
-    return new Promise<string[]>((resolve, reject) => {
-        walk(path, { entryFilter: ({ dirent }) => !dirent.isDirectory() }, (err, entries) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            resolve(entries.map((entry) => entry.path));
-        });
-    });
 }
 
 main();
