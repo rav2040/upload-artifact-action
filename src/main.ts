@@ -7,7 +7,7 @@ async function main() {
     try {
         const client = create();
 
-        const paths = getInput("path").split(/\s+(?=([^"]*"[^"]*")*[^"]*$)/g).map((str) => str.trim()).filter(Boolean);
+        const paths = getInput("path").split(/\s+(?=([^"]*"[^"]*")*[^"]*$)/g).filter(Boolean).map((str) => str.trim());
         const uniquePaths = Array.from(new Set(paths));
 
         await Promise.all(uniquePaths.map(async (path) => {
