@@ -1,19 +1,21 @@
 import { createHash } from "crypto";
-import { getInput, setFailed } from "@actions/core";
-import { create } from "@actions/artifact";
-import globby from "globby";
+import { getMultilineInput, setFailed } from "@actions/core";
+import { create as createArtifactClient } from "@actions/artifact";
+import { create as createGlobClient } from "@actions/glob";
+
+const artifactClient = createArtifactClient();
 
 async function main() {
     try {
-        const client = create();
+        const paths = getMultilineInput("path", { required: true });
 
-        const paths = getInput("path").split(/\s+(?=([^"]*"[^"]*")*[^"]*$)/g).filter(Boolean).map((str) => str.trim());
-        const uniquePaths = Array.from(new Set(paths));
-
-        await Promise.all(uniquePaths.map(async (path) => {
+        await Promise.all(paths.map(async (path) => {
             const name = createHash("sha256").update(path).digest("hex");
-            const paths = await globby(path);
-            return client.uploadArtifact(name, paths, ".", { continueOnError: false })
+
+            const globber = await createGlobClient(path);
+            const paths = await globber.glob();
+
+            return artifactClient.uploadArtifact(name, paths, ".", { continueOnError: false })
         }))
     } catch (err) {
         if (err instanceof Error) setFailed(err);
