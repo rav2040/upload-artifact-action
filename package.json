@@ -1,6 +1,6 @@
 {
   "name": "upload-artifact-action",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "author": "Stuart Kennedy",
   "main": "lib/main.js",
   "license": "MIT",
